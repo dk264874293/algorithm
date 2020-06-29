@@ -58,5 +58,7 @@ function bothLinkedList(){
   
 }
 
-bothLinkedList()
+// bothLinkedList()
+
+
 
