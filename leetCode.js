@@ -145,4 +145,104 @@ function leetCode146_v1() {
 //    obj.put(key,value)
 }
 
-leetCode146_v1();
+// leetCode146_v1();
+
+function leetCode146_v2() {
+  class Listnode {
+    constructor(key, val) {
+      this.key = key;
+      this.val = val;
+      this.next = null;
+      this.prev = null;
+    }
+  }
+
+  class LRUCache {
+    constructor(capacity) {
+      this.capacity = capacity;
+      this.hashTable = {};
+      this.count = 0;
+      this.dummyHead = new Listnode();
+      this.dummyTail = new Listnode();
+      this.dummyHead.next = this.dummyTail;
+      this.dummyTail.prev = this.dummyHead;
+    }
+
+    get(key) {
+      const node = this.hashTable[key];
+      if (node === null || node === undefined) {
+        return -1;
+      }
+      this.moveToHead(node);
+      return node.val;
+    }
+
+    moveToHead(node) {
+      this.removeFromList(node);
+      this.addToHead(node);
+    }
+
+    addToHead(node) {
+      this.dummyTail.prev.next = node;
+      node.prev = this.dummyTail.prev;
+      this.dummyTail.prev = node;
+      node.next = this.dummyTail;
+      this.hashTable[node.key] = node;
+      this.count++;
+    }
+
+    removeFromList(node) {
+      const thatNext = node.next;
+      const thatPrev = node.prev;
+      // console.log(thatNext, 'next');
+      // console.log(thatPrev,'prev');
+      thatPrev.next = thatNext;
+      thatNext.prev = thatPrev;
+      this.hashTable[node.key] = null;
+      this.count--;
+    }
+    removeLRUItem() {
+      const itemKey = this.dummyHead.next["key"];
+      this.hashTable[itemKey] = null;
+      this.dummyHead.next = this.dummyHead.next.next;
+      this.dummyHead.next.prev = this.dummyHead;
+      this.count--;
+    }
+
+    put(key, value) {
+      const node = this.hashTable[key];
+      if (node === null || node === undefined) {
+        const new_node = new Listnode(key, value);
+        if (this.count === this.capacity) {
+          this.removeLRUItem();
+        }
+        this.addToHead(new_node);
+      } else {
+        node.val = value;
+        this.moveToHead(node);
+      }
+    }
+  }
+
+  var cache = new LRUCache(2);
+  cache.put(2, 1); // [1]
+  cache.put(2, 2); // [1,2]
+//   console.log(cache);
+  console.log(cache.get(2));
+//   console.log(cache.get(1)); //[2,1]
+//   cache.put(3, 3); //[1,3]
+//   console.log(cache);
+//   console.log(cache.dummyHead.next, cache.dummyHead.next.next, cache.dummyTail);
+//   console.log(cache.get(2)); //[1,3]
+//   cache.put(4, 4);
+//   console.log(cache.get(1)); // -1
+  // cache.put(1, 1);
+  // cache.put(4, 1);
+//   console.log(cache.get(3));
+// console.log(cache.get(4));
+  // cache.get(3);
+
+  //    obj.put(key,value)
+}
+
+leetCode146_v2()
